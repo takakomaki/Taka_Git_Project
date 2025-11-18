@@ -1,0 +1,81 @@
+﻿You are my development assistant.
+Create a local-to-GitHub push automation workflow for me.
+Use my existing GitHub Personal Access Token.
+Follow all steps below and generate the necessary scripts and instructions.
+
+① 目的
+
+指定フォルダ内のファイルを GitHub リポジトリに push する作業を、Cursor からできるだけ自動化したい。
+
+Windowsローカルにあるファイルを、決まったレポジトリに簡単にアップロードできる状態を作る。
+
+② 前提条件
+
+GitHub の Personal Access Token はすでに取得済み。
+
+GitHub アカウント名： takakomaki
+
+作成 or 使用するリポジトリ名：https://github.com/takakomaki/takako_PC_files
+
+ローカルの対象ディレクトリ：C:\doc\taka\★叡智の羅針盤\Taka-Git-Project
+
+③ Cursorで作成してほしいもの
+A. 初期セットアップ用スクリプト（Git 初期化・リモート設定）
+
+内容：
+
+git init
+
+git remote add origin https://YOUR_GITHUB_NAME:${TOKEN}@github.com/YOUR_GITHUB_NAME/YOUR_REPO_NAME.git
+
+.gitignore の自動生成（以下例）
+
+.DS_Store
+
+node_modules
+
+.__pycache__
+
+.env
+
+B. 自動コミット＆Pushスクリプト（push.bat または push.sh）
+
+機能：
+
+指定フォルダに移動
+
+変更をすべてステージング
+
+自動コミット（メッセージは日付付き）
+
+自動で GitHub に push
+
+C. Cursor の "Run" で実行可能な形に整えてほしい
+
+Windows: push.bat
+
+Mac: push.sh（chmod 755 も含めて生成）
+
+④ 確認ポイント（安全対策）
+
+誤って意図しないフォルダをPushしないよう、
+スクリプト実行前に「現在のディレクトリ表示」機能を入れてほしい
+（例：echo Current directory: %cd%）
+
+最終的に Cursor からファイルを作成して、
+「これを実行すれば push できる」状態で渡してほしい。
+
+⑤ 最終アウトプット
+
+setup_git.(bat|sh)
+
+push_git.(bat|sh)
+
+.gitignore
+
+README（このワークフローの使い方）
+
+すべて Cursor 内で生成し、必要なファイルを同時に作ること。
+
+
+   pwsh -ExecutionPolicy Bypass -File push_git.bat
