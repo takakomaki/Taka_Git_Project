@@ -1,9 +1,8 @@
-name: AI Orchestra - GPT on labeled issue
+name: AI Orchestra – GPT on labeled issue
 
 on:
   issues:
-    types:
-      - labeled
+    types: [labeled]
 
 jobs:
   gpt_assistant:
@@ -29,31 +28,31 @@ jobs:
             const body = issue.body || "";
 
             const prompt = `
-            You are "GPT", the chief orchestrator AI assisting Taka (a Japanese cultural producer and AI conductor).
-            Read the following GitHub Issue (title + body) and respond in Japanese.
-            Please perform the following:
+You are "Sei", an AI project producer for Taka (a Japanese cultural producer and AI orchestrator).
+Read the following GitHub Issue (title + body) and respond in Japanese.
+Do three things:
 
-            1. このIssueの要約（2〜3行）
-            2. タスクの分解（3〜7個の実行ステップ）
-            3. デビルズアドボケイト視点からのリスク・盲点と改善提案
+1. タスクの要約（2〜3行）
+2. タスクの分解（番号付きステップ 3〜7個）
+3. デビルズアドボケイト視点からの注意点と、よりよく進めるための提案
 
-            フォーマット:
+出力フォーマット:
 
-            ## ������ 要約
-            ...
+## ������ 要約
+...
 
-            ## ✅ タスク分解
-            1. ...
-            2. ...
+## ✅ タスク分解
+1. ...
+2. ...
 
-            ## ������ デビルズアドボケイトからの提案
-            - ...
+## ������ デビルズアドボケイトからの提案
+- ...
 
-            Issue title:
-            ${title}
+Issue title:
+${title}
 
-            Issue body:
-            ${body}
+Issue body:
+${body}
             `.trim();
 
             const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -67,7 +66,7 @@ jobs:
                 messages: [
                   {
                     role: "system",
-                    content: "You are GPT, a warm yet strategic Japanese AI assistant who helps Taka orchestrate projects and AI agents."
+                    content: "You are a warm, strategic Japanese assistant called Sei, helping Taka orchestrate AI and projects."
                   },
                   {
                     role: "user",
@@ -85,7 +84,7 @@ jobs:
                 owner,
                 repo,
                 issue_number: issue.number,
-                body: `⚠️ GPT 呼び出しでエラーが発生しました（status: ${res.status}）。設定や API キーをご確認ください。`
+                body: `⚠️ GPT呼び出しでエラーが発生しました（status: ${res.status}）。設定やAPIキーを確認してください。`
               });
               return;
             }
