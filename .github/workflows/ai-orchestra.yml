@@ -1,4 +1,4 @@
-name: ai-orchestra
+name: ai-orchestra-test
 
 on:
   issues:
@@ -6,86 +6,11 @@ on:
       - labeled
 
 jobs:
-  gpt_assistant:
+  debug:
     # ラベルが ai-gpt のときだけ動く
     if: github.event.label.name == 'ai-gpt'
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-
-    env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
-      - name: Debug event
+      - name: Show event info
         run: echo "Issue #${{ github.event.issue.number }} labeled ${{ github.event.label.name }}"
-
-      - name: Call GPT and comment on issue
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const issue = context.payload.issue;
-            const { owner, repo } = context.repo;
-
-            const title = issue.title || "";
-            const body = issue.body || "";
-
-            const prompt = `
-You are GPT, a warm yet strategic Japanese AI assistant helping Taka orchestrate projects and AI agents.
-Read the following GitHub Issue (title + body) and respond in Japanese.
-
-1. このIssueの要約（2〜3行）
-2. タスクの分解（3〜7個の実行ステップ）
-3. デビルズアドボケイト視点からの注意点と改善提案
-
-Issue title:
-${title}
-
-Issue body:
-${body}
-`.trim();
-
-            const res = await fetch("https://api.openai.com/v1/chat/completions", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-              },
-              body: JSON.stringify({
-                model: "gpt-4.1-mini",
-                messages: [
-                  {
-                    role: "system",
-                    content: "You are GPT, a warm yet strategic Japanese AI assistant who helps Taka orchestrate projects and AI agents."
-                  },
-                  {
-                    role: "user",
-                    content: prompt
-                  }
-                ],
-                temperature: 0.4,
-              }),
-            });
-
-            if (!res.ok) {
-              const text = await res.text();
-              console.log("OpenAI API error:", res.status, text);
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: issue.number,
-                body: `⚠️ GPT 呼び出しでエラーが発生しました（status: ${res.status}）。ログを確認してください。`
-              });
-              return;
-            }
-
-            const data = await res.json();
-            const reply = data.choices?.[0]?.message?.content?.trim() || "GPTからの応答が取得できませんでした。";
-
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: issue.number,
-              body: reply,
-            });
