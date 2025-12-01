@@ -1,2 +1,2 @@
-# takako_PC_files
-PCファイルバックアップ
+# taka git project
+プロジェクト
