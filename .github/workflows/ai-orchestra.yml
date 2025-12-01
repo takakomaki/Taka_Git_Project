@@ -1,4 +1,4 @@
-name: AI Orchestra - GPT on labeled issue
+name: ai-orchestra
 
 on:
   issues:
@@ -17,6 +17,9 @@ jobs:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
+      - name: Debug event
+        run: echo "Issue #${{ github.event.issue.number }} labeled ${{ github.event.label.name }}"
+
       - name: Call GPT and comment on issue
         uses: actions/github-script@v7
         with:
@@ -29,32 +32,19 @@ jobs:
             const body = issue.body || "";
 
             const prompt = `
-            You are "GPT", the chief orchestrator AI assisting Taka (a Japanese cultural producer and AI conductor).
-            Read the following GitHub Issue (title + body) and respond in Japanese.
-            Please perform the following:
+You are GPT, a warm yet strategic Japanese AI assistant helping Taka orchestrate projects and AI agents.
+Read the following GitHub Issue (title + body) and respond in Japanese.
 
-            1. このIssueの要約（2〜3行）
-            2. タスクの分解（3〜7個の実行ステップ）
-            3. デビルズアドボケイト視点からのリスク・盲点と改善提案
+1. このIssueの要約（2〜3行）
+2. タスクの分解（3〜7個の実行ステップ）
+3. デビルズアドボケイト視点からの注意点と改善提案
 
-            フォーマット:
+Issue title:
+${title}
 
-            ## ������ 要約
-            ...
-
-            ## ✅ タスク分解
-            1. ...
-            2. ...
-
-            ## ������ デビルズアドボケイトからの提案
-            - ...
-
-            Issue title:
-            ${title}
-
-            Issue body:
-            ${body}
-            `.trim();
+Issue body:
+${body}
+`.trim();
 
             const res = await fetch("https://api.openai.com/v1/chat/completions", {
               method: "POST",
@@ -74,7 +64,7 @@ jobs:
                     content: prompt
                   }
                 ],
-                temperature: 0.5,
+                temperature: 0.4,
               }),
             });
 
@@ -85,7 +75,7 @@ jobs:
                 owner,
                 repo,
                 issue_number: issue.number,
-                body: `⚠️ GPT 呼び出しでエラーが発生しました（status: ${res.status}）。設定や API キーをご確認ください。`
+                body: `⚠️ GPT 呼び出しでエラーが発生しました（status: ${res.status}）。ログを確認してください。`
               });
               return;
             }
