@@ -1,0 +1,28 @@
+name: ai-gpt-min
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  gpt_test:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Call GPT (minimal check)
+        run: |
+          echo "Calling GPT API..."
+          curl https://api.openai.com/v1/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -d '{
+              "model": "gpt-4.1-mini",
+              "messages": [
+                {"role":"user","content":"Hello from GitHub Actions!"}
+              ]
+            }'
