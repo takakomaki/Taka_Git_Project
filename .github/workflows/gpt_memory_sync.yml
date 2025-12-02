@@ -6,39 +6,45 @@ on:
 
 jobs:
   gpt_memory_sync:
-    # ラベルが gpt-memory のときだけ動かす
     if: github.event.label.name == 'gpt-memory'
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # push の衝突防止に必要
 
       - name: Prepare memory directory
         run: mkdir -p memory/gpt
 
-      - name: Append issue content to GPT memory log
+      - name: Append memory entry
         run: |
           FILE="memory/gpt/issue-${{ github.event.issue.number }}.md"
           {
             echo "# Issue #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
-            echo
-            echo "- Label : ${{ github.event.label.name }}"
-            echo "- URL   : ${{ github.event.issue.html_url }}"
-            echo "- Created at : ${{ github.event.issue.created_at }}"
-            echo
+            echo ""
+            echo "- URL: ${{ github.event.issue.html_url }}"
+            echo "- Label: ${{ github.event.label.name }}"
+            echo "- Created: ${{ github.event.issue.created_at }}"
+            echo ""
             echo "## Body"
             echo '```'
             printf "%s\n" "${{ github.event.issue.body }}"
             echo '```'
+            echo ""
           } >> "$FILE"
 
-      - name: Commit and push memory file
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit changes
         run: |
           git config user.name "taka-gpt-memory-bot"
           git config user.email "actions@github.com"
-          git add memory/gpt
-          git commit -m "Add GPT memory log for issue #${{ github.event.issue.number }}" || exit 0
-          git push
+          git add memory/gpt || true
+          git commit -m "Update memory for issue #${{ github.event.issue.number }}" || echo "No changes to commit"
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git pull --rebase
+          git push || echo "Push skipped (no changes)"
