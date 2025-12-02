@@ -1,72 +1,67 @@
-name: ai-gpt-issue-orchestra
+name: GPT memory sync
 
 on:
   issues:
-    types: [labeled]
+    types:
+      - labeled
+
+permissions:
+  contents: write
 
 jobs:
   gpt_assistant:
-if: >
-  ${{
-    contains(
-      toJson(github.event.issue.labels),
-      'gpt-memory'
-    )
-  }}
-
+    # ラベルに gpt-memory が付いたときだけ動かす
+    if: contains(join(github.event.issue.labels.*.name, ','), 'gpt-memory')
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
-
-jobs:
-  gpt_assistant:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check label and decide whether to run
-        id: check_label
-        run: |
-          echo "Labels: ${{ toJson(github.event.issue.labels.*.name) }}"
-          if [[ "${{ toJson(github.event.issue.labels.*.name) }}" == *"gpt-memory"* ]]; then
-            echo "run_job=true" >> $GITHUB_OUTPUT
-          else
-            echo "run_job=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Checkout repository
-        if: steps.check_label.outputs.run_job == 'true'
         uses: actions/checkout@v4
 
-      - name: Save issue to memory/gpt
-        if: steps.check_label.outputs.run_job == 'true'
+      - name: Append / overwrite memory file for this issue
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ', ') }}
         run: |
-          ISSUE_NUMBER=${{ github.event.issue.number }}
-          TITLE="${{ github.event.issue.title }}"
-          URL="${{ github.event.issue.html_url }}"
-
           mkdir -p memory/gpt
 
           FILE="memory/gpt/issue-${ISSUE_NUMBER}.md"
 
-          {
-            echo "# Issue #${ISSUE_NUMBER} - ${TITLE}"
-            echo
-            echo "- URL: ${URL}"
-            echo "- Updated at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-            echo
-            echo "## Latest event payload"
-            echo '```json'
-            echo '${{ toJson(github.event) }}'
-            echo '```'
-          } > "${FILE}"
+          cat > "$FILE" <<EOF
+# Issue #${ISSUE_NUMBER}: ${ISSUE_TITLE}
 
-      - name: Commit & push memory file
-        if: steps.check_label.outputs.run_job == 'true'
+- URL: ${ISSUE_URL}
+- Author: ${ISSUE_USER}
+- Labels: ${ISSUE_LABELS}
+- Logged at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+---
+
+${{ github.event.issue.body }}
+
+EOF
+
+      - name: Check for changes
+        id: git_diff
         run: |
-          git config user.name "ai-orchestra-bot"
-          git config user.email "ai-orchestra-bot@example.com"
+          if git diff --quiet; then
+            echo "no_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "no_changes=false" >> $GITHUB_OUTPUT
+          fi
 
-          git add memory/gpt/issue-${{ github.event.issue.number }}.md
-          git commit -m "Add/update GPT memory for issue #${{ github.event.issue.number }}" || echo "No changes to commit"
-          git push
+      - name: Commit changes
+        if: steps.git_diff.outputs.no_changes == 'false'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add memory/gpt
+          git commit -m "Update GPT memory for issue #${{ github.event.issue.number }}"
+
+      - name: Push changes
+        if: steps.git_diff.outputs.no_changes == 'false'
+        run: |
+          git push origin "${GITHUB_REF#refs/heads/}"
