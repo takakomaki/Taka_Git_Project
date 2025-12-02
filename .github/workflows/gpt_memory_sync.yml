@@ -1,0 +1,77 @@
+name: Sync GPT memory from issues
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  sync-gpt-memory:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check label gpt-memory exists
+        id: check_label
+        run: |
+          echo "Labels: ${{ toJson(github.event.issue.labels) }}"
+          echo '${{ toJson(github.event.issue.labels) }}' | \
+            jq -e '.[] | select(.name=="gpt-memory")' >/dev/null 2>&1 || {
+              echo "No gpt-memory label. Skip."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            }
+
+      - name: Stop if not memory issue
+        if: steps.check_label.outputs.skip == 'true'
+        run: echo "Not a gpt-memory issue. Job finished."
+
+      - name: Checkout repo
+        if: steps.check_label.outputs.skip != 'true'
+        uses: actions/checkout@v4
+
+      - name: Create GPT memory file
+        if: steps.check_label.outputs.skip != 'true'
+        run: |
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          TITLE="${{ github.event.issue.title }}"
+          URL="${{ github.event.issue.html_url }}"
+
+          # ISO風タイムスタンプ（ファイル名用）
+          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+
+          # Issue本文を取得
+          BODY=$(jq -r '.issue.body' "$GITHUB_EVENT_PATH")
+
+          mkdir -p memory/gpt
+
+          FILE="memory/gpt/${TS}-issue-${ISSUE_NUMBER}.md"
+
+          cat > "$FILE" <<EOF
+# $TITLE
+
+- Issue: #$ISSUE_NUMBER
+- Synced at: $TS (UTC)
+- URL: $URL
+
+---
+
+$BODY
+EOF
+
+          echo "Created $FILE"
+          cat "$FILE"
+
+      - name: Commit and push
+        if: steps.check_label.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add memory/gpt
+          git commit -m "Sync GPT memory from issue #${{ github.event.issue.number }}" || {
+            echo "Nothing to commit."
+            exit 0
+          }
+          git push
