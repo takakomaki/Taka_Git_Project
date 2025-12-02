@@ -6,6 +6,7 @@ on:
 
 jobs:
   gpt_memory_sync:
+    # ラベルが gpt-memory のときだけ動く
     if: github.event.label.name == 'gpt-memory'
     runs-on: ubuntu-latest
 
@@ -13,38 +14,43 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # push の衝突防止に必要
+          fetch-depth: 0
 
       - name: Prepare memory directory
         run: mkdir -p memory/gpt
 
-      - name: Append memory entry
+      - name: Append simple memory log
         run: |
-          FILE="memory/gpt/issue-${{ github.event.issue.number }}.md"
+          FILE="memory/gpt/issue-log.md"
           {
-            echo "# Issue #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
-            echo ""
+            echo "## Issue #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
             echo "- URL: ${{ github.event.issue.html_url }}"
             echo "- Label: ${{ github.event.label.name }}"
-            echo "- Created: ${{ github.event.issue.created_at }}"
-            echo ""
-            echo "## Body"
-            echo '```'
-            printf "%s\n" "${{ github.event.issue.body }}"
-            echo '```'
+            echo "- Synced at: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
             echo ""
           } >> "$FILE"
 
-      - name: Commit changes
+          echo "---- Current memory/gpt contents ----"
+          ls -la memory/gpt
+          echo "------------------------------------"
+
+      - name: Commit changes (if any)
         run: |
           git config user.name "taka-gpt-memory-bot"
           git config user.email "actions@github.com"
-          git add memory/gpt || true
-          git commit -m "Update memory for issue #${{ github.event.issue.number }}" || echo "No changes to commit"
 
-      - name: Push changes
+          git add memory/gpt || true
+
+          echo "---- git status before commit ----"
+          git status
+          echo "----------------------------------"
+
+          git commit -m "Update GPT memory log for issue #${{ github.event.issue.number }}" \
+            || echo "No changes to commit"
+
+      - name: Push changes (if any)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git pull --rebase
+          git pull --rebase || echo "Nothing to pull"
           git push || echo "Push skipped (no changes)"
