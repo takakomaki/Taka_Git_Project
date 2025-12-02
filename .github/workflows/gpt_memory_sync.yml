@@ -13,7 +13,7 @@ jobs:
         id: check_label
         run: |
           echo "Labels: ${{ toJson(github.event.issue.labels.*.name) }}"
-          if [[ "${{ toJson(github.event.issue.labels.*.name) }}" == *"ai-gpt"* ]]; then
+          if [[ "${{ toJson(github.event.issue.labels.*.name) }}" == *"gpt-memory"* ]]; then
             echo "run_job=true" >> $GITHUB_OUTPUT
           else
             echo "run_job=false" >> $GITHUB_OUTPUT
@@ -53,7 +53,5 @@ jobs:
           git config user.email "ai-orchestra-bot@example.com"
 
           git add memory/gpt/issue-${{ github.event.issue.number }}.md
-
           git commit -m "Add/update GPT memory for issue #${{ github.event.issue.number }}" || echo "No changes to commit"
-
           git push
