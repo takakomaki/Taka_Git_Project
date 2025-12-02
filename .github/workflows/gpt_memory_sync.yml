@@ -4,6 +4,10 @@ on:
   issues:
     types: [labeled]
 
+# ★ GITHUB_TOKEN に「書き込み権限」を明示
+permissions:
+  contents: write
+
 jobs:
   gpt_memory_sync:
     # ラベルが gpt-memory のときだけ動く
@@ -48,9 +52,12 @@ jobs:
           git commit -m "Update GPT memory log for issue #${{ github.event.issue.number }}" \
             || echo "No changes to commit"
 
-      - name: Push changes (if any)
+      - name: Push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git pull --rebase || echo "Nothing to pull"
-          git push || echo "Push skipped (no changes)"
+          # 一応リモートを最新化
+          git pull --rebase origin ${{ github.ref_name }} || echo "Nothing to pull"
+
+          echo "---- pushing to origin ${{ github.ref_name }} ----"
+          git push origin HEAD:${{ github.ref_name }}
