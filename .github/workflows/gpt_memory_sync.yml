@@ -6,7 +6,13 @@ on:
 
 jobs:
   gpt_assistant:
-    if: contains(join(github.event.issue.labels.*.name, ','), 'gpt-memory')
+if: >
+  ${{
+    contains(
+      toJson(github.event.issue.labels),
+      'gpt-memory'
+    )
+  }}
 
     runs-on: ubuntu-latest
     steps:
