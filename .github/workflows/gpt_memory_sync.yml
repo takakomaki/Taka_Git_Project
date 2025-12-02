@@ -2,7 +2,16 @@ name: ai-gpt-issue-orchestra
 
 on:
   issues:
-    types: [opened, edited, labeled]
+    types: [labeled]
+
+jobs:
+  gpt_assistant:
+    if: contains(join(github.event.issue.labels.*.name, ','), 'gpt-memory')
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
 
 jobs:
   gpt_assistant:
