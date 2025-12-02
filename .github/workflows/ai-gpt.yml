@@ -3,6 +3,7 @@ name: ai-gpt-issue-orchestra
 on:
   issues:
     types:
+      - opened
       - labeled
 
 jobs:
