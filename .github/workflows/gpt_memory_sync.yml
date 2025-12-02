@@ -2,66 +2,43 @@ name: GPT memory sync
 
 on:
   issues:
-    types:
-      - labeled
-
-permissions:
-  contents: write
+    types: [labeled]
 
 jobs:
-  gpt_assistant:
-    # ラベルに gpt-memory が付いたときだけ動かす
-    if: contains(join(github.event.issue.labels.*.name, ','), 'gpt-memory')
+  gpt_memory_sync:
+    # ラベルが gpt-memory のときだけ動かす
+    if: github.event.label.name == 'gpt-memory'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Append / overwrite memory file for this issue
+      - name: Prepare memory directory
+        run: mkdir -p memory/gpt
+
+      - name: Append issue content to GPT memory log
+        run: |
+          FILE="memory/gpt/issue-${{ github.event.issue.number }}.md"
+          {
+            echo "# Issue #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
+            echo
+            echo "- Label : ${{ github.event.label.name }}"
+            echo "- URL   : ${{ github.event.issue.html_url }}"
+            echo "- Created at : ${{ github.event.issue.created_at }}"
+            echo
+            echo "## Body"
+            echo '```'
+            printf "%s\n" "${{ github.event.issue.body }}"
+            echo '```'
+          } >> "$FILE"
+
+      - name: Commit and push memory file
         env:
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_URL: ${{ github.event.issue.html_url }}
-          ISSUE_USER: ${{ github.event.issue.user.login }}
-          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ', ') }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir -p memory/gpt
-
-          FILE="memory/gpt/issue-${ISSUE_NUMBER}.md"
-
-          cat > "$FILE" <<EOF
-# Issue #${ISSUE_NUMBER}: ${ISSUE_TITLE}
-
-- URL: ${ISSUE_URL}
-- Author: ${ISSUE_USER}
-- Labels: ${ISSUE_LABELS}
-- Logged at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
-
----
-
-${{ github.event.issue.body }}
-
-EOF
-
-      - name: Check for changes
-        id: git_diff
-        run: |
-          if git diff --quiet; then
-            echo "no_changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "no_changes=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit changes
-        if: steps.git_diff.outputs.no_changes == 'false'
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "taka-gpt-memory-bot"
+          git config user.email "actions@github.com"
           git add memory/gpt
-          git commit -m "Update GPT memory for issue #${{ github.event.issue.number }}"
-
-      - name: Push changes
-        if: steps.git_diff.outputs.no_changes == 'false'
-        run: |
-          git push origin "${GITHUB_REF#refs/heads/}"
+          git commit -m "Add GPT memory log for issue #${{ github.event.issue.number }}" || exit 0
+          git push
