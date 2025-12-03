@@ -1,0 +1,235 @@
+name: AI Orchestra Issues
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+  contents: write
+
+jobs:
+  # 1️⃣ GPTアシスタント：タスク分解＋デビルズアドボケイト
+  gpt_assistant:
+    if: github.event.label.name == 'ai-gpt'
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Call OpenAI and comment on issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const { owner, repo } = context.repo;
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issue.number,
+              body: "🤖 ai-gpt ワークフローが起動しました。タスク整理とデビルズアドボケイトを行います。"
+            });
+
+            const title = issue.title || "";
+            const body = issue.body || "";
+
+            const prompt =
+              "You are \\\"GPT\\\", the AI project producer for Taka, a Japanese cultural producer and AI orchestrator.\n" +
+              "Read the following GitHub Issue (title + body) and respond in Japanese.\n\n" +
+              "Do three things:\n\n" +
+              "1. タスクの要約（2〜3行）\n" +
+              "2. タスクの分解（番号付きステップ 3〜7個）\n" +
+              "3. デビルズアドボケイト視点からの注意点と、よりよく進めるための提案\n\n" +
+              "出力フォーマット:\n\n" +
+              "## 📝 要約\n" +
+              "...\n\n" +
+              "## ✅ タスク分解\n" +
+              "1. ...\n" +
+              "2. ...\n\n" +
+              "## 👀 デビルズアドボケイトからの提案\n" +
+              "- ...\n\n" +
+              "Issue title:\n" +
+              title +
+              "\n\nIssue body:\n" +
+              body;
+
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+              },
+              body: JSON.stringify({
+                model: "gpt-4.1-mini",
+                messages: [
+                  {
+                    role: "system",
+                    content: "You are a warm, strategic Japanese assistant called GPT, helping Taka orchestrate AI and projects."
+                  },
+                  {
+                    role: "user",
+                    content: prompt
+                  }
+                ],
+                temperature: 0.4
+              })
+            });
+
+            if (!response.ok) {
+              const text = await response.text();
+              console.log("OpenAI API error:", response.status, text);
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issue.number,
+                body: `⚠️ GPT呼び出しでエラーが発生しました（status: ${response.status}）。設定やAPIキーを確認してください。`
+              });
+              return;
+            }
+
+            const data = await response.json();
+            const reply =
+              (data.choices &&
+                data.choices[0] &&
+                data.choices[0].message &&
+                data.choices[0].message.content) ||
+              "GPTからの応答が取得できませんでした。";
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issue.number,
+              body: reply.trim(),
+            });
+
+  # 2️⃣ GPT memory sync：Issueを「記憶ファイル」に追記
+  gpt_memory_sync:
+    if: github.event.label.name == 'gpt-memory'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare memory directory
+        run: mkdir -p memory/gpt
+
+      - name: Append simple memory log
+        run: |
+          FILE="memory/gpt/issue-log.md"
+          {
+            echo "## Issue #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
+            echo "- URL: ${{ github.event.issue.html_url }}"
+            echo "- Label: ${{ github.event.label.name }}"
+            echo "- Synced at: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+            echo ""
+          } >> "$FILE"
+
+          echo "---- Current memory/gpt contents ----"
+          ls -la memory/gpt
+          echo "------------------------------------"
+
+      - name: Commit changes if needed
+        run: |
+          git config user.name "taka-gpt-memory-bot"
+          git config user.email "actions@github.com"
+
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected. Committing..."
+            git add memory/gpt
+            git commit -m "Update GPT memory log for issue #${{ github.event.issue.number }}"
+          else
+            echo "No changes to commit."
+          fi
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_BRANCH=$(git branch --show-current)
+          echo "Current branch is: $CURRENT_BRANCH"
+
+          git pull --rebase origin "$CURRENT_BRANCH" || echo "Nothing to pull"
+
+          echo "---- pushing to origin $CURRENT_BRANCH ----"
+          git push origin HEAD:"$CURRENT_BRANCH" || echo "Nothing to push"
+
+  # 3️⃣ Orchestra Brief 生成：他AIに渡す会議ブリーフ
+  gpt_orchestra_brief:
+    if: github.event.label.name == 'orchestra-brief'
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+    steps:
+      - name: Generate Orchestra Brief and comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const { owner, repo } = context.repo;
+
+            const title = issue.title || "";
+            const body = issue.body || "";
+
+            const prompt =
+              "You are \\\"GPT\\\", conductor of the AI Orchestra for Taka.\n" +
+              "Create an 'Orchestra Brief v0.1' in Japanese Markdown that other AIs (Claude, Gemini, Grok, DeepSeek) can read to join this conversation.\n\n" +
+              "必ず次のセクションを含めてください：\n" +
+              "- Topic\n- Background\n- Goal\n- Constraints\n- Roles（GPT, Claude, Gemini, Grok, DeepSeek の期待役割）\n- Questions to You（他AIへの質問 3〜5個）\n\n" +
+              "Issue title:\n" + title +
+              "\n\nIssue body:\n" + body;
+
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+              },
+              body: JSON.stringify({
+                model: "gpt-4.1-mini",
+                messages: [
+                  {
+                    role: "system",
+                    content: "You are a warm, structured assistant called GPT, creating AI Orchestra Briefs."
+                  },
+                  {
+                    role: "user",
+                    content: prompt
+                  }
+                ],
+                temperature: 0.4
+              })
+            });
+
+            if (!response.ok) {
+              const text = await response.text();
+              console.log("OpenAI API error:", response.status, text);
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issue.number,
+                body: `⚠️ Orchestra Brief生成中にエラーが発生しました（status: ${response.status}）。設定を確認してください。`
+              });
+              return;
+            }
+
+            const data = await response.json();
+            const brief =
+              (data.choices &&
+                data.choices[0] &&
+                data.choices[0].message &&
+                data.choices[0].message.content) ||
+              "GPTからのOrchestra Briefが取得できませんでした。";
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issue.number,
+              body: "🎼 以下がこのIssueの Orchestra Brief v0.1 です。他AIにそのまま共有できます。\n\n" + brief.trim(),
+            });
