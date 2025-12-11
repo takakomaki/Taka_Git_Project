@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "created": "2025-12-11",
+  "time_allocation": {
+    "priority_1": {
+      "activity": "魂の核を見抜く力の実践",
+      "percentage": 40,
+      "reason": "Takaさんだけが持つ唯一無二の価値、すべての価値創造の源泉、他では代替できない",
+      "specific_activities": [
+        "顧客との深い対話",
+        "魂の核を見抜くセッション",
+        "価値の引き出し"
+      ],
+      "time_per_week_hours": 16,
+      "time_per_day_hours": 3.2
+    },
+    "priority_2": {
+      "activity": "世界観の言語化と伝達",
+      "percentage": 20,
+      "reason": "真・愛・善・美の世界観を言語化する、AI Orchestraに伝える、顧客に伝える",
+      "specific_activities": [
+        "世界観の言語化",
+        "AI Orchestraへの指示",
+        "顧客への価値伝達"
+      ],
+      "time_per_week_hours": 8,
+      "time_per_day_hours": 1.6
+    },
+    "priority_3": {
+      "activity": "最終判断と承認",
+      "percentage": 20,
+      "reason": "AI Orchestraの出力を最終判断、方向性の決定、品質の確保",
+      "specific_activities": [
+        "AI出力のレビュー",
+        "最終判断",
+        "承認"
+      ],
+      "time_per_week_hours": 8,
+      "time_per_day_hours": 1.6
+    },
+    "priority_4": {
+      "activity": "戦略と方向性の決定",
+      "percentage": 20,
+      "reason": "全体の方向性を決定、優先順位を決定、リソース配分を決定",
+      "specific_activities": [
+        "戦略会議",
+        "方向性の決定",
+        "優先順位の決定"
+      ],
+      "time_per_week_hours": 8,
+      "time_per_day_hours": 1.6
+    }
+  },
+  "activities_to_avoid": {
+    "repetitive_tasks": {
+      "reason": "AI Orchestraで自動化できる、時間の無駄、価値創造に集中できない",
+      "examples": [
+        "ファイル整理（自動化）",
+        "ドキュメント作成（自動化）",
+        "データ入力（自動化）"
+      ],
+      "solution": "AI Orchestraに自動化を依頼、システム化を推進"
+    },
+    "superficial_responses": {
+      "reason": "価値創造にならない、時間の無駄、ブランド価値を下げる",
+      "examples": [
+        "表面的なコンサルテーション",
+        "表面的なマーケティング",
+        "表面的なブランディング"
+      ],
+      "solution": "深層の価値に集中、魂の核を見抜く力に集中"
+    },
+    "ai_capable_tasks": {
+      "reason": "AI Orchestraで自動化できる、時間の無駄、価値創造に集中できない",
+      "examples": [
+        "情報収集（AIで自動化）",
+        "データ分析（AIで自動化）",
+        "文書作成（AIで自動化）"
+      ],
+      "solution": "AI Orchestraに依頼、自動化を推進"
+    },
+    "low_value_activities": {
+      "reason": "価値創造にならない、時間の無駄、収益に直結しない",
+      "examples": [
+        "低価値なコンサルテーション",
+        "低価値なマーケティング",
+        "低価値なブランディング"
+      ],
+      "solution": "高価値な活動に集中、価値提供マトリクスを参照"
+    }
+  },
+  "weekly_schedule": {
+    "monday": {
+      "morning": "戦略と方向性の決定",
+      "afternoon": "魂の核を見抜く力の実践",
+      "evening": "最終判断と承認"
+    },
+    "tuesday": {
+      "morning": "世界観の言語化と伝達",
+      "afternoon": "魂の核を見抜く力の実践",
+      "evening": "最終判断と承認"
+    },
+    "wednesday": {
+      "morning": "戦略と方向性の決定",
+      "afternoon": "魂の核を見抜く力の実践",
+      "evening": "最終判断と承認"
+    },
+    "thursday": {
+      "morning": "世界観の言語化と伝達",
+      "afternoon": "魂の核を見抜く力の実践",
+      "evening": "最終判断と承認"
+    },
+    "friday": {
+      "morning": "週の振り返り",
+      "afternoon": "魂の核を見抜く力の実践",
+      "evening": "最終判断と承認"
+    },
+    "weekend": {
+      "activity": "学習と充電",
+      "note": "必要に応じて作業"
+    }
+  },
+  "time_reduction_target": {
+    "current": "100%",
+    "target": "30%",
+    "reduction": "70%",
+    "method": "AI Orchestraによる自動化"
+  }
+}
+

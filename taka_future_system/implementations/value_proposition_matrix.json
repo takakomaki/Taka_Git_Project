@@ -1,0 +1,252 @@
+{
+  "version": "1.0",
+  "created": "2025-12-11",
+  "matrix": {
+    "depth_levels": {
+      "D1": {
+        "name": "表層 (Surface)",
+        "characteristics": "表面的な情報提供、一般的なアドバイス",
+        "value": "情報の整理、基本的な方向性の提示",
+        "time": "短時間（1時間以内）",
+        "price_range": {
+          "min": 5000,
+          "max": 20000,
+          "currency": "JPY"
+        }
+      },
+      "D2": {
+        "name": "中層 (Middle)",
+        "characteristics": "構造的な理解、実践的な支援",
+        "value": "体系的な知識、実践的なスキル",
+        "time": "中時間（数時間〜1日）",
+        "price_range": {
+          "min": 20000,
+          "max": 100000,
+          "currency": "JPY"
+        }
+      },
+      "D3": {
+        "name": "深層 (Deep)",
+        "characteristics": "本質的な理解、変容の支援",
+        "value": "魂の核の引き出し、根本的な変容",
+        "time": "長時間（数日〜数週間）",
+        "price_range": {
+          "min": 100000,
+          "max": 500000,
+          "currency": "JPY"
+        }
+      },
+      "D4": {
+        "name": "極深層 (Ultra Deep)",
+        "characteristics": "完全な統合、継承の確立",
+        "value": "人生の転換、遺産の確立",
+        "time": "長期間（数ヶ月〜数年）",
+        "price_range": {
+          "min": 500000,
+          "max": 5000000,
+          "currency": "JPY"
+        }
+      }
+    },
+    "target_segments": {
+      "T1": {
+        "name": "一般層 (General)",
+        "characteristics": "個人の成長・学びを求める人",
+        "needs": ["自己成長", "スキルアップ", "人生の方向性"],
+        "budget": {
+          "level": "低〜中",
+          "range": {
+            "min": 5000,
+            "max": 100000,
+            "currency": "JPY"
+          }
+        },
+        "time": "限られた時間"
+      },
+      "T2": {
+        "name": "富裕層 (High Net Worth)",
+        "characteristics": "経済的余裕があり、深い価値を求める人",
+        "needs": ["本質的な価値", "独自性", "影響力"],
+        "budget": {
+          "level": "高",
+          "range": {
+            "min": 100000,
+            "max": 5000000,
+            "currency": "JPY"
+          }
+        },
+        "time": "時間に余裕がある"
+      },
+      "T3": {
+        "name": "企業 (Corporate)",
+        "characteristics": "組織の成長・変革を求める企業",
+        "needs": ["組織変革", "ブランド構築", "イノベーション"],
+        "budget": {
+          "level": "高",
+          "range": {
+            "min": 500000,
+            "max": 10000000,
+            "currency": "JPY"
+          }
+        },
+        "time": "プロジェクトベース"
+      },
+      "T4": {
+        "name": "海外市場 (International)",
+        "characteristics": "日本文化やAI協創に興味のある海外の人・企業",
+        "needs": ["日本文化の深層理解", "AI協創の実践"],
+        "budget": {
+          "level": "中〜高",
+          "range": {
+            "min": 100000,
+            "max": 5000000,
+            "currency": "JPY",
+            "usd_range": {
+              "min": 1000,
+              "max": 50000,
+              "currency": "USD"
+            }
+          }
+        },
+        "time": "文化の違いを考慮"
+      }
+    },
+    "matrix_cells": {
+      "D1_T1": {
+        "value_proposition": "基本的な情報提供、方向性の提示、入門的なワークショップ",
+        "delivery_formats": [
+          "オンライン講座（¥5,000〜¥20,000）",
+          "1時間のコンサルテーション（¥10,000）",
+          "メールマガジン（無料〜¥1,000/月）"
+        ],
+        "differentiation": [
+          "真・愛・善・美の世界観がにじみ出る",
+          "AI Orchestraの基本理念が伝わる",
+          "日本文化の価値が感じられる"
+        ],
+        "status": "active"
+      },
+      "D1_T2": {
+        "value_proposition": "高品質な情報提供、パーソナライズされた方向性、エクスクルーシブな体験",
+        "delivery_formats": [
+          "プライベートセッション（¥50,000〜¥200,000）",
+          "限定ワークショップ（¥100,000）",
+          "カスタムメイドのプログラム（¥200,000〜）"
+        ],
+        "differentiation": [
+          "魂の核を見抜く力が感じられる",
+          "独自性と希少性",
+          "深い価値への入り口"
+        ],
+        "status": "active"
+      },
+      "D2_T1": {
+        "value_proposition": "体系的な知識の提供、実践的なスキルの習得、構造的な理解の支援",
+        "delivery_formats": [
+          "中級講座（¥30,000〜¥100,000）",
+          "数週間のプログラム（¥50,000〜¥150,000）",
+          "実践的なワークショップ（¥20,000〜¥80,000）"
+        ],
+        "differentiation": [
+          "AI Orchestraの実践的な活用",
+          "日本文化の深層理解",
+          "真・愛・善・美の実践"
+        ],
+        "status": "active"
+      },
+      "D3_T2": {
+        "value_proposition": "完全にパーソナライズされた深層支援、人生の転換の支援、遺産の確立の支援",
+        "delivery_formats": [
+          "プライベート深層プログラム（¥500,000〜¥2,000,000）",
+          "1年間の変容プログラム（¥1,000,000〜¥3,000,000）",
+          "完全カスタムメイドのプログラム（¥2,000,000〜¥5,000,000）"
+        ],
+        "differentiation": [
+          "魂の核を見抜く力の完全な実践",
+          "完全にパーソナライズされた体験",
+          "人生の転換と遺産の確立"
+        ],
+        "status": "active"
+      },
+      "D4_T2": {
+        "value_proposition": "完全な統合の支援、継承の確立の支援、人生の完全な転換",
+        "delivery_formats": [
+          "プライベート極深層プログラム（¥2,000,000〜¥10,000,000）",
+          "数年間の変容プログラム（¥5,000,000〜¥20,000,000）",
+          "完全カスタムメイドの遺産プログラム（¥10,000,000〜）"
+        ],
+        "differentiation": [
+          "魂の核を見抜く力の完全な実践",
+          "完全にパーソナライズされた極深層体験",
+          "人生の完全な転換と遺産の確立"
+        ],
+        "status": "active"
+      }
+    },
+    "blank_cells": [
+      {
+        "cell": "D2_T3",
+        "opportunity": "企業向け中層プログラム",
+        "potential_value": "組織変革の支援、中層の価値提供",
+        "priority": "high"
+      },
+      {
+        "cell": "D3_T4",
+        "opportunity": "海外市場向け深層プログラム",
+        "potential_value": "日本文化の本質的な理解、AI協創の本質的な実践",
+        "priority": "high"
+      },
+      {
+        "cell": "D4_T3",
+        "opportunity": "企業向け極深層プログラム",
+        "potential_value": "組織の完全な統合、組織遺産の確立",
+        "priority": "medium"
+      }
+    ]
+  },
+  "unique_value": {
+    "core": "魂の核を見抜く力",
+    "components": [
+      {
+        "name": "深層の価値を感じ取る感覚",
+        "description": "真・愛・善・美の世界観に基づく感覚"
+      },
+      {
+        "name": "AIと人間プロデュースの掛け合わせ",
+        "description": "AI Orchestraによる価値の増幅"
+      },
+      {
+        "name": "日本文化の深層理解",
+        "description": "日本の伝統文化に宿る叡智を理解し、伝える力"
+      }
+    ]
+  },
+  "pricing_tiers": {
+    "entry": {
+      "range": [5000, 20000],
+      "target": "T1",
+      "formats": ["オンライン講座", "1時間コンサル"]
+    },
+    "standard": {
+      "range": [20000, 100000],
+      "target": "T1, T2",
+      "formats": ["中級講座", "数週間プログラム"]
+    },
+    "premium": {
+      "range": [100000, 500000],
+      "target": "T2, T3",
+      "formats": ["プライベートプログラム", "企業セミナー"]
+    },
+    "exclusive": {
+      "range": [500000, 2000000],
+      "target": "T2, T3",
+      "formats": ["深層プログラム", "組織変革"]
+    },
+    "legacy": {
+      "range": [2000000, null],
+      "target": "T2, T3",
+      "formats": ["極深層プログラム", "組織遺産"]
+    }
+  }
+}
+

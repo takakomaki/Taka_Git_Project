@@ -1,0 +1,29 @@
+name: Auto Sync Obsidian ↔ GitHub ↔ Cursor
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Sync Obsidian to GitHub
+        run: |
+          echo "Syncing Obsidian vaults to GitHub..."
+          # Obsidian vaultsの同期処理
+      
+      - name: Sync GitHub to Cursor
+        run: |
+          echo "Syncing GitHub changes to Cursor..."
+          # GitHubからCursorへの同期処理
+      
+      - name: Auto Backup
+        run: |
+          echo "Creating automatic backup..."
+          # 自動バックアップ処理
+
