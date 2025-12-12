@@ -15,8 +15,8 @@ Snapshot date: 2025-12-12
 --------------------------------------------------
 - Repository name: Taka_Git_Project
 - Owner: takakomaki
-- Purpose (from README.md summary):
-  - README.md が非常に短いため、補助的に taka_future_system/README.md の目的も参照します。
+- 目的（README.md参照・要約）:
+  - README.mdが極短のため、補助として taka_future_system/README.md の目的も併記します。
 
 README.md (raw):
 ```
@@ -115,6 +115,7 @@ taka_future_system/
 --------------------------------------------------
 ```
 .
+├── CONTEXT_PACK.md
 ├── README.md
 ├── memory/
 │   ├── claude/
@@ -3736,40 +3737,59 @@ wisdom/
 --------------------------------------------------
 【6. GitHub Issues Snapshot】
 --------------------------------------------------
-- 総 Issue 数: 49
-- Open: 37
+- 総 Issue 数: 57
+- Open: 45
 - Closed: 12
 
 - Milestone 一覧:
-  - Taka Future System v1.0 (state=open, open=36, closed=0)
-    - https://github.com/takakomaki/Taka_Git_Project/milestone/2
   - Orchestra → Archive / v0.x (state=open, open=0, closed=11)
     - https://github.com/takakomaki/Taka_Git_Project/milestone/1
+  - Taka Future System v1.0 (state=open, open=36, closed=0)
+    - https://github.com/takakomaki/Taka_Git_Project/milestone/2
+  - System Review & Evolution (state=open, open=8, closed=0)
+    - https://github.com/takakomaki/Taka_Git_Project/milestone/3
+
+- Review & Evolution（Milestone: System Review & Evolution）Issue一覧:
+  - https://github.com/takakomaki/Taka_Git_Project/issues/54
+  - https://github.com/takakomaki/Taka_Git_Project/issues/55
+  - https://github.com/takakomaki/Taka_Git_Project/issues/56
+  - https://github.com/takakomaki/Taka_Git_Project/issues/57
+  - https://github.com/takakomaki/Taka_Git_Project/issues/58
+  - https://github.com/takakomaki/Taka_Git_Project/issues/59
+  - https://github.com/takakomaki/Taka_Git_Project/issues/60
+  - https://github.com/takakomaki/Taka_Git_Project/issues/61
 
 - ラベル一覧と色（意味も含める）:
   - ティール（成長・学習・調和）
     - curriculum (#00A39A)
     - review (#00A39A)
+    - monthly (#00A39A)
     - ai-orchestra (#7AB8A5)
+    - system-evolution (#7AB8A5)
     - done (#7AB8A5)
   - ゴールド（価値・光・美）
     - value-proposition (#F5D193)
     - in-progress (#F5D193)
+    - context-pack (#F5D193)
     - brand (#E8C47A)
   - ダークブルー（深さ・実践・基盤）
     - business (#0E1C36)
+    - annual (#0E1C36)
     - infrastructure (#1A2F4A)
     - integration (#2A4A6E)
+    - quarterly (#2A4A6E)
   - グレー（未着手）
     - todo (#D0D0D0)
 
 - Repoに存在するラベル（色）:
   - ai-gpt (#1effd2)
   - ai-orchestra (#7AB8A5)
+  - annual (#0E1C36)
   - brand (#E8C47A)
   - bridge (#c452b8)
   - bug (#d73a4a)
   - business (#0E1C36)
+  - context-pack (#F5D193)
   - curriculum (#00A39A)
   - documentation (#0075ca)
   - done (#7AB8A5)
@@ -3782,10 +3802,13 @@ wisdom/
   - infrastructure (#1A2F4A)
   - integration (#2A4A6E)
   - invalid (#e4e669)
+  - monthly (#00A39A)
   - orchestra-brief (#fba6c6)
   - orchestra-core (#5e06aa)
+  - quarterly (#2A4A6E)
   - question (#d876e3)
   - review (#00A39A)
+  - system-evolution (#7AB8A5)
   - todo (#D0D0D0)
   - value-proposition (#F5D193)
   - wontfix (#ffffff)
@@ -3794,11 +3817,12 @@ wisdom/
 【7. Current Phase & Priority】
 --------------------------------------------------
 - README / Issue 状態から判断される現在フェーズ:
-  - v1.0の基盤（master_files + implementations + Issue枠組み）が揃い、これから実行に入る直前。
+  - v1.0の基盤（master_files + implementations + Issue枠組み）が揃い、レビュー習慣（Monthly/Quarterly/Annual）もIssue化された。
 - 人間（Taka）が今やるべきこと:
   - master_files 7本を読み、言葉の温度/違和感/不足をマーキング（世界観の最終OK）。
   - LP/商品を「対象者1人・提供価値1つ・CTA1つ」に絞って最初の1本を決める。
-  - 35 Issueから最初に動かす3つだけを選び、in-progressへ（残りはtodoで保持）。
+  - v1.0 Issue群から最初に動かす3つだけを選び、in-progressへ（残りはtodoで保持）。
+  - 月次のCONTEXT_PACK更新Issue（#57）を起点に、毎月の共通地図更新を習慣化。
 - 意図的に後回しにしていること:
   - GitHub Actions等の高度自動化（意図と運用が固まってから）。
   - ダッシュボード自動更新の最適化（運用パターン確立後）。
