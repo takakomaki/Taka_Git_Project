@@ -106,6 +106,13 @@ cd Taka_Git_Project
 .\check_token_permissions.ps1
 ```
 
+必要なら、Issueの作成→クローズまで含めてチェックできます（権限不足の検出に強いです）：
+
+```powershell
+cd Taka_Git_Project
+.\check_token_permissions.ps1 -CreateTestIssue
+```
+
 以下のような出力が表示されれば成功です：
 
 ```
